@@ -7,19 +7,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SlideCardLayoutManager extends RecyclerView.LayoutManager {
 
+    /**
+     * 搬运 LinearLayoutManager
+     */
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    // 布局
+    /**
+     * 实现 ItemView 布局
+     */
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-
-        // ViewHodler回收复用
+        // 先移除所有view
+        removeAllViews();
+        // 在布局之前，将所有的子 View 先 Detach 掉，放入到 Scrap 缓存中
         detachAndScrapAttachedViews(recycler);
-
         int bottomPosition;
         int itemCount = getItemCount();
         if (itemCount < CardConfig.MAX_SHOW_COUNT) {
@@ -28,22 +33,19 @@ public class SlideCardLayoutManager extends RecyclerView.LayoutManager {
             // 布局了四张卡片 --- 4，5，6，7
             bottomPosition = itemCount - CardConfig.MAX_SHOW_COUNT;
         }
-
         for (int i = bottomPosition; i < itemCount; i++) {
             // 复用
             View view = recycler.getViewForPosition(i);
+            // 将 ItemView 加入到 RecyclerView 中
             addView(view);
-
+            // 测量 ItemView
             measureChildWithMargins(view, 0, 0);
-
             int widthSpace = getWidth() - getDecoratedMeasuredWidth(view);
             int heightSpace = getHeight() - getDecoratedMeasuredHeight(view);
-
             // 布局 ---draw -- onDraw ,onDrawOver, onLayout
             layoutDecoratedWithMargins(view, widthSpace / 2, heightSpace / 2,
                     widthSpace / 2 + getDecoratedMeasuredWidth(view),
                     heightSpace / 2 + getDecoratedMeasuredHeight(view));
-
             int level = itemCount - i - 1;
             if (level > 0) {
                 if (level < CardConfig.MAX_SHOW_COUNT - 1) {
@@ -58,7 +60,5 @@ public class SlideCardLayoutManager extends RecyclerView.LayoutManager {
                 }
             }
         }
-
-
     }
 }

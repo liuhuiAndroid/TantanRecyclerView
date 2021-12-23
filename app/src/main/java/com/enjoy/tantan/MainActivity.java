@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView rv;
+    private RecyclerView recyclerView;
     private UniversalAdapter<SlideCardBean> adapter;
     private List<SlideCardBean> mDatas;
 
@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rv = findViewById(R.id.rv);
-        rv.setLayoutManager(new SlideCardLayoutManager());
+        recyclerView = findViewById(R.id.rv);
+        recyclerView.setLayoutManager(new SlideCardLayoutManager());
 
         mDatas = SlideCardBean.initDatas();
         adapter = new UniversalAdapter<SlideCardBean>(this, mDatas, R.layout.item_swipe_card) {
@@ -38,11 +38,12 @@ public class MainActivity extends AppCompatActivity {
                         .into((ImageView) viewHolder.getView(R.id.iv));
             }
         };
-        rv.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         // 初始化数据
         CardConfig.initConfig(this);
-        SlideCallback slideCallback = new SlideCallback(rv, adapter, mDatas);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(slideCallback);
-        itemTouchHelper.attachToRecyclerView(rv);
+
+        SlideCallback slideCallback = new SlideCallback(adapter, mDatas);
+        ItemTouchHelper helper = new ItemTouchHelper(slideCallback);
+        helper.attachToRecyclerView(recyclerView);
     }
 }
