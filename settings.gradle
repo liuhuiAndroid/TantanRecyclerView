@@ -1,2 +1,4 @@
-include ':app'
+include ':app-1'
+include ':app-2'
+include ':lib'
 rootProject.name = "TantanRecyclerView"
